@@ -88,7 +88,7 @@ final class PasswordTest extends TestCase
 
         // changing the password
         $newPassword = $password->changeTo("new_secure_password");
-        
+
         // upon update, the old hash should be invalid
         $this->assertFalse($newPassword->isValid($oldHash));
 
