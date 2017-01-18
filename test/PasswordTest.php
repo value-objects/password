@@ -57,4 +57,43 @@ final class PasswordTest extends TestCase
 
         $this->assertNotEquals($password->getValue(), $password2->getValue());
     }
+
+    public function testInvalidHasShouldReturnFalse()
+    {
+        $phrase = 'my_secure_password';
+        $password = Password::encode($phrase);
+
+        // assumed that this hash is stored somewhere
+        $hash = password_hash('other_password', PASSWORD_BCRYPT, ['cost' => 12]);
+        $this->assertFalse($password->isValid($hash));
+    }
+
+    public function testRehashingDifferentPhraseIsNotAllowed()
+    {
+        $phrase = 'my_secure_password';
+        $password = Password::encode($phrase);
+
+        // assumed that this hash is stored somewhere
+        $hash = password_hash('others_password', PASSWORD_BCRYPT, ['cost' => 12]);
+        $this->assertFalse($password->needsRehash($hash));
+    }
+
+    public function testChangingOfPassword()
+    {
+        $password = Password::encode('my_secure_password');
+
+        // preserve the old password
+        $oldPassword = clone $password;
+        $oldHash = $oldPassword->getValue();
+
+        // changing the password
+        $newPassword = $password->changeTo("new_secure_password");
+        
+        // upon update, the old hash should be invalid
+        $this->assertFalse($newPassword->isValid($oldHash));
+
+        // new valid hash
+        $newHash = $newPassword->getValue();
+        $this->assertTrue($newPassword->isValid($newHash));
+    }
 }

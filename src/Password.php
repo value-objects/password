@@ -27,8 +27,10 @@ final class Password
     private $hash;
 
     /**
+     * In practice, we are not creating a "new Password" or "instance of password".
+     * Rather, we say, give me the encoded (encrypted) password of this string (phrase).
      *
-     * @uses NAMED CONSTRUCTOR. See http://verraes.net/2014/06/named-constructors-in-php/
+     * @see http://verraes.net/2014/06/named-constructors-in-php/
      * @param string $phrase
      * @return void
      */
@@ -39,7 +41,7 @@ final class Password
     }
 
     /**
-     * Since this uses __toString(), it will return the hash value as an object.
+     * Since it uses __toString(), it will return the hash value as an object.
      *
      * @param string $phrase
      * @return Password
@@ -49,19 +51,41 @@ final class Password
         return new Password($phrase);
     }
 
-    public function isValid(string $hash)
+    /**
+     * Verifying if hash is valid or not - where hash cost is not subject for uniqueness.
+     *
+     * @param string $hash
+     * @return bool
+     */
+    public function isValid(string $hash) : bool
     {
         return \password_verify($this->phrase, $hash);
     }
 
-    public function rehash()
+    /**
+     * Given the phrase, it will be encoded again using the new cost
+     *
+     *  @return \ValueObject\Password\Password
+     */
+    public function rehash() : Password
     {
         return self::encode($this->phrase);
     }
 
-    public function needsRehash(string $hash)
+    /**
+     * It is assumed that the $hash input is stored and used somewhere.
+     *
+     * @param string $hash
+     * @return bool
+     */
+    public function needsRehash(string $hash) : bool
     {
         return \password_needs_rehash($hash, PASSWORD_BCRYPT, ['cost' => 12]);
+    }
+
+    public function changeTo(string $phrase)
+    {
+        return self::encode($phrase);
     }
 
     /**
