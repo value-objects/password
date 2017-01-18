@@ -1,0 +1,9 @@
+# Composer files
+composer.lock
+vendor/
+
+
+# Others
+build/
+nbproject/
+
