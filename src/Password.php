@@ -99,18 +99,4 @@ final class Password
     {
         return $this->hash;
     }
-
-    /**
-     * IMPORTANT: DO NOT USE THIS IN ACTUAL IMPLEMENTATION.
-     * THIS IS FOR UNIT TESTING PURPOSES ONLY
-     *
-     * Returns the generated hash value (hack to run __toString method during test)
-     *
-     * @deprecated since version 0.1.0
-     * @return string
-     */
-    public function getValue() : string
-    {
-        return self::__toString();
-    }
 }
