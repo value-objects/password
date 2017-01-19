@@ -86,7 +86,7 @@ final class PasswordTest extends TestCase
         // upon update, the old hash should be invalid
         $this->assertFalse($newPassword->isValid("{$password}"));
 
-        // new valid hash        
+        // new valid hash
         $this->assertTrue($newPassword->isValid("{$newPassword}"));
     }
 }
